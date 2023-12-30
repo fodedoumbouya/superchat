@@ -35,8 +35,6 @@ class _SignInPageState extends BaseWidgetState<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       appBar: AppBar(
         title: CustomTextWidget(kAppTitle, color: bp()),
@@ -147,9 +145,7 @@ class _SignInPageState extends BaseWidgetState<SignInPage> {
                           style: TextButton.styleFrom(
                             foregroundColor: bc(),
                           ),
-                          onPressed: () => Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (_) => const SignUpPage())),
+                          onPressed: () => toPage(const SignUpPage()),
                           child: const CustomTextWidget('S\'inscrire'),
                         ),
                       ),
@@ -166,7 +162,6 @@ class _SignInPageState extends BaseWidgetState<SignInPage> {
 
   Future<void> _signIn() async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
 
     if (_formKey.currentState?.validate() ?? false) {
       try {
@@ -177,8 +172,7 @@ class _SignInPageState extends BaseWidgetState<SignInPage> {
         );
 
         if (credential.user != null) {
-          navigator.pushReplacement(
-              MaterialPageRoute(builder: (_) => const HomePage()));
+          jumpToPage(const HomePage());
         }
       } on FirebaseAuthException catch (e, stackTrace) {
         final String errorMessage;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:superchat/util/adapterHelper/responsive_sizer.dart';
 import 'package:superchat/util/myLog.dart';
+import 'package:superchat/widgets/custom/customTextWidget.dart';
 
 typedef FunctionBoolCallback = void Function(bool o);
 
@@ -98,6 +99,47 @@ abstract class BaseWidgetState<T extends BaseWidget> extends ConsumerState<T>
     if (mounted) {
       setState(() {});
     }
+  }
+
+  // / show dialog
+  // / [title] dialog title
+  // / [content] dialog content
+  // / [actions] dialog actions
+  // / [barrierDismissible] dialog barrierDismissible
+  showMyDialog({
+    required String title,
+    required String content,
+    String confirmTxt = "OK",
+    String cancelTxt = "Cancel",
+    Color? txtColor = Colors.red,
+    Color? contentColor,
+    required void Function() onCancel,
+    required void Function() onConfirm,
+  }) {
+    return showAdaptiveDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog.adaptive(
+              title: CustomTextWidget(title, color: txtColor),
+              content: CustomTextWidget(content,
+                  withOverflow: false, color: contentColor ?? bd()),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    pop();
+                    onCancel();
+                  },
+                  child: CustomTextWidget(cancelTxt, color: bc()),
+                ),
+                TextButton(
+                  onPressed: () {
+                    pop();
+                    onConfirm();
+                  },
+                  child: CustomTextWidget(confirmTxt, color: txtColor),
+                ),
+              ],
+            ));
   }
 
   /// --------------------------------------------------------------------------------------------------------------------------------

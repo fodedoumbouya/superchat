@@ -4,10 +4,12 @@ import 'package:superchat/base/baseStateNotifier.dart';
 import 'package:superchat/base/baseWidget.dart';
 import 'package:superchat/base/repo/lastMessages/model/model.dart';
 import 'package:superchat/base/repo/theme/logic/logic.dart';
+import 'package:superchat/base/repo/theme/model/model.dart';
 import 'package:superchat/base/repo/user/logic/logic.dart';
 import 'package:superchat/model/users.dart';
 import 'package:superchat/pages/chat/chatView.dart';
 import 'package:superchat/pages/login/sign_in_page.dart';
+import 'package:superchat/pages/profil/profil.dart';
 import 'package:superchat/util/constants.dart';
 import 'package:superchat/widgets/stream_listener.dart';
 
@@ -27,21 +29,23 @@ class HomePage extends BaseWidget {
 //1122aa
 
 class _HomePageState extends BaseWidgetState<HomePage> {
-  bool isDarkMode = false;
   @override
   Widget build(BuildContext context) {
     /// calling the userProvider to get the contacts state
     final contacts = userProvider.getState(ref);
     final ThemeNotifier themeMode = themeProvider.getFunction(ref);
+    final ThemeState themeState = themeProvider.getState(ref);
+
     final List<LastMessages> lastMessages = lastMessagesProvider.getState(ref);
 
     return StreamListener<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       listener: (user) {
         if (user == null) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const SignInPage()),
-              (route) => false);
+          // Navigator.of(context).pushAndRemoveUntil(
+          //     MaterialPageRoute(builder: (_) => const SignInPage()),
+          //     (route) => false);
+          jumpToPage(const SignInPage());
         }
       },
       child: Scaffold(
@@ -54,11 +58,19 @@ class _HomePageState extends BaseWidgetState<HomePage> {
           backgroundColor: bc(),
           actions: [
             IconButton(
-              icon: const Icon(Icons.logout),
+                onPressed: () {
+                  themeMode.setTheme(isDarkMode: !themeState.isDarkMode);
+                },
+                icon: Icon(
+                  themeState.isDarkMode
+                      ? Icons.light_mode_outlined
+                      : Icons.dark_mode_outlined,
+                  color: bp(),
+                )),
+            IconButton(
+              icon: Icon(Icons.person, color: bp()),
               onPressed: () {
-                // FirebaseAuth.instance.signOut();
-                themeMode.setTheme(isDarkMode: isDarkMode);
-                isDarkMode = !isDarkMode;
+                toPage(const Profil());
               },
             ),
           ],

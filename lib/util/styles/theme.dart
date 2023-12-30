@@ -19,8 +19,9 @@ class ZTheme {
       brightness: Brightness.dark,
       buttonTheme: const ButtonThemeData(colorScheme: ColorScheme.dark()),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.blue,
+        backgroundColor: ZColors.bc,
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       inputDecorationTheme: const InputDecorationTheme(
         enabledBorder: UnderlineInputBorder(
@@ -74,6 +75,7 @@ class ZTheme {
       appBarTheme: const AppBarTheme(
         backgroundColor: ZColors.bc,
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: ZColors.primaryColor,

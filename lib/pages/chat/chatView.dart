@@ -51,18 +51,26 @@ class _ChatViewState extends BaseWidgetState<ChatView> {
         'timestamp': DateTime.now().millisecondsSinceEpoch,
       });
       textController.clear();
-      moveKeyboard();
+      moveKeyboard(offset: 50);
     } catch (e) {
       CoreToast.showError("Message not sent");
     }
   }
 
-  void moveKeyboard() {
+  void moveKeyboard({double offset = 100}) {
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent + 200,
+        _scrollController.position.maxScrollExtent + offset,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
+      );
+    }
+  }
+
+  void jumpKeyboard() {
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(
+        _scrollController.position.maxScrollExtent,
       );
     }
   }
@@ -73,7 +81,7 @@ class _ChatViewState extends BaseWidgetState<ChatView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 100), () {
-        moveKeyboard();
+        jumpKeyboard();
       });
     });
   }
@@ -126,7 +134,7 @@ class _ChatViewState extends BaseWidgetState<ChatView> {
                             ConnectionState.waiting ||
                             ConnectionState.active:
                         if (snapshot.hasData) {
-                          moveKeyboard();
+                          // moveKeyboard();
                           final event = snapshot.data!.docs;
                           List<Map<String, dynamic>> temp = [];
                           for (var msg in event) {
@@ -155,57 +163,54 @@ class _ChatViewState extends BaseWidgetState<ChatView> {
                     }
                   }),
             ),
-            TapRegion(
-              onTapInside: (event) {
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  moveKeyboard();
-                });
-              },
-              child: Container(
-                height: 10.h,
-                padding: EdgeInsets.only(left: 2.w, right: 5.w),
-                decoration: BoxDecoration(
-                    color: bp(),
-                    // borderRadius: const BorderRadius.only(
-                    //   topLeft: Radius.circular(10),
-                    //   topRight: Radius.circular(10),
-                    // ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 0.5,
-                        blurRadius: 7,
-                        offset:
-                            const Offset(0, 3), // changes position of shadow
-                      ),
-                    ]),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: textController,
-                        decoration: InputDecoration(
-                          hintText: 'Type a message',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
+            Container(
+              height: 11.h,
+              padding: EdgeInsets.only(left: 5.w, right: 5.w, bottom: 3.h),
+              decoration: BoxDecoration(
+                  color: bp(),
+                  // borderRadius: const BorderRadius.only(
+                  //   topLeft: Radius.circular(10),
+                  //   topRight: Radius.circular(10),
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 0.5,
+                      blurRadius: 7,
+                      offset: const Offset(0, 3), // changes position of shadow
+                    ),
+                  ]),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: textController,
+                      onTap: () {
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          moveKeyboard();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Type a message',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        sendMessage(
-                            from: user!.uid,
-                            to: widget.user.id ?? '',
-                            content: textController.text);
-                      },
-                      icon: Icon(
-                        Icons.send,
-                        color: bc(),
-                      ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      sendMessage(
+                          from: user!.uid,
+                          to: widget.user.id ?? '',
+                          content: textController.text);
+                    },
+                    icon: Icon(
+                      Icons.send,
+                      color: bc(),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
