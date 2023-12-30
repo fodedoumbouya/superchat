@@ -1,34 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:superchat/base/baseStateNotifier.dart';
+import 'package:superchat/common/data/data_persistence.dart';
 import 'package:superchat/model/users.dart';
 
-import '../../../baseStateNotifier.dart';
-
-final userProvider =
-    StateNotifierProvider<ContactsNotifier, Future<List<UsersModel>>>(
-  (_) => ContactsNotifier(),
+final userProvider = StateNotifierProvider<UserNotifier, UsersModel?>(
+  (_) {
+    // get user data from the local storage to the userState for the app
+    UsersModel? userState;
+    final userLocalData = DataPersistence.getAccount();
+    if (userLocalData != null) {
+      userState = userLocalData;
+    }
+    return UserNotifier(user: userState);
+  },
 );
 
-class ContactsNotifier extends BaseStateNotifier<Future<List<UsersModel>>> {
-  ContactsNotifier() : super(Future.value([])) {
-    _addListener();
-  }
+class UserNotifier extends BaseStateNotifier<UsersModel?> {
+  UsersModel? user;
+  UserNotifier({UsersModel? user}) : super(user);
 
-  final CollectionReference<Map<String, dynamic>> _contactsCollection =
-      FirebaseFirestore.instance.collection('users');
-  _addListener() {
-    state = Future.wait([]);
-    _contactsCollection.snapshots().listen((event) {
-      List<UsersModel> temp = [];
-      for (var user in event.docs) {
-        // print("user: ${user.data()}");
-        if (user.data()["id"] != null) {
-          temp.add(UsersModel.fromJson(user.data()));
-        }
-      }
-      state = Future.value(temp);
-    }).onError((e) {
-      state = Future.error([]);
-    });
+  UsersModel? get getUser => state;
+
+  setUser({UsersModel? newUser}) {
+    if (newUser == null) {
+      state = null;
+      DataPersistence.removeAccount();
+    } else {
+      state = newUser;
+      DataPersistence.putAccount(newUser);
+    }
   }
 }

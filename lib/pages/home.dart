@@ -5,7 +5,7 @@ import 'package:superchat/base/baseWidget.dart';
 import 'package:superchat/base/repo/lastMessages/model/model.dart';
 import 'package:superchat/base/repo/theme/logic/logic.dart';
 import 'package:superchat/base/repo/theme/model/model.dart';
-import 'package:superchat/base/repo/user/logic/logic.dart';
+import 'package:superchat/base/repo/contacts/logic/logic.dart';
 import 'package:superchat/model/users.dart';
 import 'package:superchat/pages/chat/chatView.dart';
 import 'package:superchat/pages/login/sign_in_page.dart';
@@ -42,9 +42,6 @@ class _HomePageState extends BaseWidgetState<HomePage> {
       stream: FirebaseAuth.instance.authStateChanges(),
       listener: (user) {
         if (user == null) {
-          // Navigator.of(context).pushAndRemoveUntil(
-          //     MaterialPageRoute(builder: (_) => const SignInPage()),
-          //     (route) => false);
           jumpToPage(const SignInPage());
         }
       },

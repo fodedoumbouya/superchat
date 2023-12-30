@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:superchat/util/adapterHelper/responsive_sizer.dart';
@@ -6,6 +5,7 @@ import 'package:superchat/util/myLog.dart';
 import 'package:superchat/widgets/custom/customTextWidget.dart';
 
 typedef FunctionBoolCallback = void Function(bool o);
+typedef FunctionStringCallback = void Function(String o);
 
 abstract class BaseWidget extends ConsumerStatefulWidget {
   const BaseWidget({super.key});
@@ -81,9 +81,12 @@ abstract class BaseWidgetState<T extends BaseWidget> extends ConsumerState<T>
   }
 
   void jumpToPage(Widget w) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (con) {
-      return w;
-    }));
+    // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (con) {
+    //   return w;
+    // }),
+    // );
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => w), (route) => false);
   }
 
   void jumpToFirstPage() {

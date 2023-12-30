@@ -1,25 +1,30 @@
 # superchat
 
-A new Flutter project.
+Un projet de classe.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Environnement de développement
+    - Flutter (stable, 3.10.3)
+    - macOS (M1, 12.5)
+    - Xcode (14.3)/iOS 16
+    - Android Studio (version 2021.2)/Android toolchain - develop for Android devices (Android SDK version 33.0.0)
 
 
+## Explication Flutter Code
 
--------------------------------------Vues-----------------------------------------
-Vue list users
-profil users
-list messages
-error loading
-architecture 
+1. Style de code: 
+    - j'utilise un style personnel en flutter qui me permet d'anvance plus vite 
+        - detaille dans mon article: https://medium.com/@doumbouya/my-own-flutter-state-management-76e2fcfe9d7f 
+2. State Management:
+    - Riverpod
+
+## Fonctionnalités
+
+#### 1. 👋 Voir tous les utilisateurs
+#### 2. 👀 Voir les dernières messages sous le nom des contacts
+#### 3. 🌱 Dark mode et Light mode
+#### 4. 📫 Modifier les infos de l'utilisateurs
+#### 5. 💞️ L'envoi des messages
+
+

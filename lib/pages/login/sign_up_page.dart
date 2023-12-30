@@ -1,9 +1,13 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:superchat/base/baseStateNotifier.dart';
 import 'package:superchat/base/baseWidget.dart';
+import 'package:superchat/base/repo/user/logic/logic.dart';
+import 'package:superchat/model/users.dart';
 import 'package:superchat/pages/home.dart';
 import 'package:superchat/pages/login/sign_in_page.dart';
 import 'package:superchat/util/adapterHelper/responsive_sizer.dart';
@@ -25,6 +29,7 @@ class _SignUpPageState extends BaseWidgetState<SignUpPage> {
   final _emailFieldController = TextEditingController();
   final _passwordFieldController = TextEditingController();
   bool _showPassword = false;
+  late UserNotifier _userNotifier;
 
   @override
   void dispose() {
@@ -35,6 +40,7 @@ class _SignUpPageState extends BaseWidgetState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    _userNotifier = userProvider.getFunction(ref);
     return Scaffold(
       appBar: AppBar(
           title: CustomTextWidget(
@@ -172,6 +178,20 @@ class _SignUpPageState extends BaseWidgetState<SignUpPage> {
         );
 
         if (credential.user != null) {
+          CollectionReference usersCollection =
+              FirebaseFirestore.instance.collection('users');
+          // Map<String, dynamic> userData = {
+          //   "id": credential.user?.uid ?? '',
+          //   "displayName": _emailFieldController.text.trim().split("@")[0],
+          //   "bio": ""
+          // };
+          UsersModel userData = UsersModel(
+            id: credential.user?.uid ?? '',
+            displayName: _emailFieldController.text.trim().split("@")[0],
+            bio: "",
+          );
+          await usersCollection.add(userData.toJson());
+          _userNotifier.setUser(newUser: userData);
           jumpToPage(const HomePage());
         }
       } on FirebaseAuthException catch (e, stackTrace) {
